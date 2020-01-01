@@ -1,0 +1,6 @@
+library
+    structure TermAnsi
+    signature TERMANSI
+is
+    term-ansi.sml
+    term-ansi.sig

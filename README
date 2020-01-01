@@ -1,0 +1,104 @@
+
+sml-term-ansi README
+--------------------
+
+1. About
+
+sml-term-ansi is a simple structure for generating ANSI color codes for
+colorizing text in ANSI-capable terminals (such as most Unix terminals).
+
+2. Features
+
+- Easy to use interface for specifying foreground colors, background
+  colors, and attributes.
+
+2.1. Compatibility
+
+Terminals vary widely in their support for ANSI color codes.
+While most terminals support foreground and background colors, they may
+not support some attributes, such as BLINK or UNDERLINE.
+
+Most Unix-style terminals (including Windows and MacOS Telnet/SSH terminals
+connected to a Unix server) are supported.  On Windows, PuTTY and Tera Term
+are known to work.
+
+Note: If using SML/NJ on Windows via the command prompt, ANSI colors are
+      only supported on Windows 95 or 98 with the ANSI.SYS driver loaded.
+      See: http://support.microsoft.com/default.aspx?scid=kb;en-us;101875
+      
+      NT-based versions of Windows (such as Windows 2000 and XP) do not
+      support ANSI color codes within console applications (as far as I
+      have been able to tell).
+
+This structure was developed using SML/NJ, but should be compatible with
+other Standard ML implementations.
+      
+3. Usage
+
+Note: See the "test" directory for a number of examples of how to use
+      this structure.
+
+The TermAnsi structure exposes (via the TERMANSI signature) a single
+datatype ("color") and a single function (also called "color").  A .cm
+file is provided to make it easy to include this structure with other
+projects (provided you're using SML/NJ).
+
+The "color" function simply takes a color and returns a string with the
+ANSI escape sequence to set the color.  Typically, you would use it
+like this (assuming the TermAnsi structure has been opened):
+
+  print(color(FG_RED) ^ "This text is red!")
+  
+The following foreground colors are available:
+  FG_BLACK, FG_RED, FG_GREEN, FG_YELLOW, FG_BLUE, FG_MAGENTA,
+  FG_CYAN, and FG_WHITE.
+
+In addition, you can specify a background color:
+
+  print(color(BG_YELLOW FG_RED) ^ "This is red on yellow!")
+  
+The following background colors are available:
+  BG_BLACK, BG_RED, BG_GREEN, BG_YELLOW, BG_BLUE, BG_MAGENTA,
+  BG_CYAN, and BG_WHITE.
+The BG_YELLOW color actually may be brown on some terminals.
+
+There are also attributes you can apply:
+
+  print(color(UNDERLINE FG_RED) ^ "This is underlined red!")
+
+The following attributes are available (terminal support for many of
+these is limited):
+  NORMAL    - Remove current attributes and background color.
+  BOLD      - Render text in bold (usually just brighter).
+  UNDERLINE - Render text underlined.
+  BLINK     - Render blinking (flashing) text.
+  REVERSE   - Invert foreground and background colors.
+  INVISIBLE - Hide the text from display.
+
+Background colors and attributes can be combined together, like so:
+
+  print(color(UNDERLINE(BOLD(BG_RED FG_BLUE))) ^
+    "Underlined, bold, blue on red.")
+
+Note that attributes and background colors "persist".  That is,
+background colors remain set until another background color is
+specified, and attributes combine together until NORMAL is specified.
+
+The requirement that attributes and background colors take a
+color as an argument (usually a foreground color) is mainly for
+convenience.  To set a background color or attribute while leaving the
+foreground color untouched, use the ONLY "color":
+
+  print(color(FG_RED) ^ "Red and " ^ color(UNDERLINE ONLY) ^
+    "underlined.")
+    
+To return the current color to the default colors used by the terminal,
+use the RESET color:
+
+  print(color(FG_RED) ^ "This is red. " ^ color(RESET) ^ "This isn't.")
+
+More examples can be found in the "test" directory.
+
+4. Contact
+
+Michael Imamura <zoogie@lugatgt.org>

@@ -1,0 +1,6 @@
+library
+    structure TermAnsiTest
+is
+    ../src/term-ansi.cm
+    test.sml
+    
